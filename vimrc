@@ -288,13 +288,13 @@ nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
 " Dealing with ctrlp.vim
-let g:ctrlp_map = '<c-f1>'
-let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_map = '<Leader>o'
 set wildignore+=*.o,*.obj,*.pyc,*/.hg/*
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](objects|\.git|\.hg|\.svn)$',
   \ 'file': '\v\.(exe|so|dll|obj|o)$',
   \ }
+let g:ctrlp_root_markers=['package','.git']
 
 
 " Only do this part when compiled with support for autocommands.
