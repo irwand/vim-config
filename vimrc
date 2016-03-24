@@ -13,6 +13,36 @@ endif
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+try
+   call plug#begin()
+
+   Plug 'altercation/vim-colors-solarized'
+   Plug 'ctrlpvim/ctrlp.vim'
+   Plug 'vim-scripts/DrawIt'
+   Plug 'vim-scripts/Tab-Name'
+   Plug 'vim-scripts/matchit.zip'
+   Plug 'qpkorr/vim-bufkill'
+   Plug 'vim-scripts/DirDiff.vim'
+   Plug 'vim-scripts/DeleteTrailingWhitespace'
+   Plug 'msanders/snipmate.vim'
+   Plug 'tpope/vim-surround'
+
+   "phindman's tools I need to look at
+   "Plug 'terryma/vim-multiple-cursors'
+   "Plug 'tpope/vim-abolish'
+   "Plug 'tpope/vim-dispatch'
+   "Plug 'tpope/vim-fugitive'
+   "Plug 'tpope/vim-repeat'
+   "Plug 'tpope/vim-sensible'
+   "Plug 'tpope/vim-unimpaired'
+   "Plug 'vim-airline/vim-airline'
+   "Plug 'weynhamz/vim-plugin-minibufexpl'
+
+   call plug#end()
+catch
+   echom "Couldn't use Vim-Plug, install it?"
+endtry
+
 if has("unix")
    " create /tmp/$USER for tmp dir for temporary files
    silent !mkdir -p /tmp/$USER
@@ -58,6 +88,7 @@ if &diff
    endif
 endif
 set diffopt=filler,iwhite,vertical " ignore whitespace, show filler line, vertical split
+
 
 " Set editing parameters
 set visualbell                   " visual bell instead of annoying beeping
@@ -130,7 +161,7 @@ set hidden                       " Lets you switch buffer without saving
 set viewoptions=cursor,folds     " Only remember cursor position and folds
 
 " setting wildchar expansion option
-set suffixes=.bak,.obj,.swp,.info   " excludes the following suffixes in filename completion
+set suffixes=.bak,.obj,.swp,.info,.o   " excludes the following suffixes in filename completion
 
 " Set tag file locations (NOTE: "tags;" make VIM search parents)
 " Do ":help file-searching" to get more info
@@ -141,9 +172,6 @@ set path=**                      " search path for gf, :find, etc
 
 " Some parameters to customize some plugins or scripts
 "let perl_fold=1                 " Use perl folding. Uncomment to enable
-let g:html_tag_case="l"          " html.vim: use lower case html tags
-let g:no_html_toolbar="no"       " html.vim: don't use toolbar
-let Tlist_Inc_Winwidth = 0       " taglist.vim: don't resize during Tlist
 
 " TODO: Set key mappings. Customize the following depending on your preference
 mapclear
@@ -206,25 +234,15 @@ imap <C-BS> <C-W>
 " Crap.. vim 7 supports vimgrep, but this thing is a bit slow now. Maybe we'll
 " use vimgrep in the future.
 let g:sourceDir="source/"
-if version >= 700
-   if has("gui_running")
-      map <expr> <M-8> ":grep -rw <cword> " . g:sourceDir . "*<cr>"
-   else
-      map <expr> <esc>8 ":grep -rw <cword> " . g:sourceDir . "*<cr>"
-   endif
+if has("gui_running")
+   map <expr> <M-8> ":grep -rw <cword> " . g:sourceDir . "*<cr>"
 else
-   if has("gui_running")
-      map <expr> <M-8> ":grep -rw <cword> " . g:sourceDir . "*<cr>"
-   else
-      map <expr> <esc>8 ":grep -rw <cword> " . g:sourceDir . "*<cr>"
-   endif
+   map <expr> <esc>8 ":grep -rw <cword> " . g:sourceDir . "*<cr>"
 endif
-
 
 " browsing
 let g:netrw_alto = 1
 let g:netrw_altv = 1
-
 
 " Completion.. From vim.org Tip #102: smart mapping for tab completion during
 " insert mode
@@ -241,69 +259,13 @@ endfunction
 inoremap <tab> <c-r>=InsertTabWrapper("backward")<cr>
 inoremap <s-tab> <c-r>=InsertTabWrapper("forward")<cr>
 
-" mapping to make movements operate on 1 screen line in wrap mode
-" Unfortunately, this only works on vim 7. Please use vim7 to enable this
-if version >= 700
-   function! ScreenMovement(movement)
-      if &wrap
-         return "g" . a:movement
-   else
-         return a:movement
-      endif
-   endfunction
-   onoremap <silent> <expr> j ScreenMovement("j")
-   onoremap <silent> <expr> k ScreenMovement("k")
-   onoremap <silent> <expr> 0 ScreenMovement("0")
-   onoremap <silent> <expr> ^ ScreenMovement("^")
-   onoremap <silent> <expr> $ ScreenMovement("$")
-   nnoremap <silent> <expr> j ScreenMovement("j")
-   nnoremap <silent> <expr> k ScreenMovement("k")
-   nnoremap <silent> <expr> 0 ScreenMovement("0")
-   nnoremap <silent> <expr> ^ ScreenMovement("^")
-   nnoremap <silent> <expr> $ ScreenMovement("$")
-endif
-
 " TODO: determine the leader character you like. Default is '\', but ',' seems
 " more easily accessible
 let mapleader=","
 
-" got these functions below from scratch.vim, and modified it
-function! MarkCurrentBufferToBeScratch()
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal noswapfile
-    setlocal buflisted
-endfunction
-
-function! OpenOrCreateScratchBuffer(bufName)
-    " Check whether the scratch buffer is already created
-    let scr_bufnum = bufnr(a:bufName)
-    if scr_bufnum == -1
-        " open a new scratch buffer
-         exe "new " . a:bufName
-         call MarkCurrentBufferToBeScratch()
-    else
-        " Scratch buffer is already created. Check whether it is open
-        " in one of the windows
-        let scr_winnum = bufwinnr(scr_bufnum)
-        if scr_winnum != -1
-            " Jump to the window which has the scratch buffer if we are not
-            " already in that window
-            if winnr() != scr_winnum
-                exe scr_winnum . "wincmd w"
-            endif
-        else
-            exe "split +buffer" . scr_bufnum
-        endif
-    endif
-endfunction
-
-function! ExecuteCommandAndDumpOutputToScratchBuffer(cmd,bufName)
-    call OpenOrCreateScratchBuffer(a:bufName)
-    :%delete
-    exe a:cmd
-    :1
-endfunction
+fun! PerforceBlame()
+execute "!python c:/bin/p4_introduced.py " . bufname("%") . " " . line(".")
+endfun
 
 " TODO: perforce mapping. Comment these lines below if you use perforce plugin
 nmap <Leader>pa :!p4 add "%"<cr>
@@ -311,8 +273,6 @@ nmap <Leader>pe :!p4 edit "%"<cr>:e!<cr>
 nmap <Leader>pr :!p4 revert "%"<cr>:e!<cr>
 nmap <Leader>ps :!p4 sync "%"<cr>:e!<cr>
 nmap <Leader>pu :!p4 submit<cr>:e!<cr>
-nmap <Leader>pf :call ExecuteCommandAndDumpOutputToScratchBuffer("r!p4 filelog -L -s -i ".expand('%'),"p4scratch")<cr>
-nmap <Leader>pd :call ExecuteCommandAndDumpOutputToScratchBuffer("r!p4 describe -du ".expand('<cword>'),"p4scratch")<cr>
 nmap <Leader>pb :call PerforceBlame()<cr>
 
 " this maps ,e to ":e <path to current file>" handy for opening new files
@@ -345,14 +305,6 @@ if has("autocmd")
    " Also load indent files, to automatically do language-dependent indenting.
    filetype plugin indent on
 
-   " I find html auto indenting annoying, so I disable it below. Comment these
-   " lines if want them enabled.
-   " autocmd BufEnter *.html setlocal indentexpr=
-   " autocmd BufEnter *.shtml setlocal indentexpr=
-   " autocmd BufEnter *.xml setlocal indentexpr=
-   " autocmd BufEnter *.xhtml setlocal indentexpr=
-   " Never mind, I made modifications to my own indent/html.vim
-
    " for CPP, C, IPP, ipp files, set the filetype accordingly for syntax
    " highlighting
    au BufNewFile,BufRead *.CPP setfiletype cpp
@@ -367,15 +319,7 @@ if has("autocmd")
    "autocmd FileType * setlocal textwidth=78
 
    " automatically remove trailing whitespace before write
-   function! StripTrailingWhitespace()
-      normal mZ
-      %s/\s\+$//e
-      if line("'Z") != line(".")
-         echo "Stripped trailing whitespace\n"
-      endif
-      normal `Z
-   endfunction
-   autocmd FileType c,cpp,java,python autocmd BufWritePre <buffer> :call StripTrailingWhitespace()
+   autocmd FileType c,cpp,java,python autocmd BufWritePre <buffer> :DeleteTrailingWhitespace
 
    " When editing a file, always jump to the last known cursor position.
    " Don't do it when the position is invalid or when inside an event handler
@@ -398,24 +342,26 @@ if has("autocmd")
    autocmd BufReadPost * syn keyword myBUG containedin=ALL BUG TODO IKDTODO IKDBUG IKDHACK IKDNOTE
    autocmd BufReadPost * hi myBUG guibg=#808000 guifg=#ffff00
 
-   " Temporary settings
-   au BufNewFile,BufRead *.shtml set wrap
-   au BufNewFile,BufRead *.shtml set formatoptions-=t
-   au BufNewFile,BufRead *.shtml set spell
+   " auto reload vimrc
+   augroup reload_vimrc " {
+      autocmd!
+      autocmd BufWritePost $MYVIMRC source $MYVIMRC
+   augroup END " }
 endif
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2 || has("gui_running")
-   set background=dark
+   if has("gui_running")
+      " color theme, look at VIM tip #693 to see the available color themes
+      " Download the color theme and use it down here
+      " Another good one: http://ethanschoonover.com/solarized
+      colorscheme solarized
+   else
+      set background=dark
+   endif
    syntax on
 endif
-
-" TODO: color theme, look at VIM tip #693 to see the available color themes
-" Download the color theme and use it down here
-" Another good one: http://ethanschoonover.com/solarized
-colorscheme solarized
-"hi MatchParen guibg=darkgreen
 
 " TODO: Uncomment this below if you want VIM to behave more like MSWin editor:
 " Ctrl-A select all, Ctrl-V paste, Ctrl-C copy, etc
