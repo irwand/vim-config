@@ -98,6 +98,9 @@ if has("gui_running")
    " scrollbar, no menu, no toolbar
    set guioptions=aAe
 
+   " this needs to be set before map cmds
+   set encoding=utf-8
+
 endif
 
 " Set diff parameters
