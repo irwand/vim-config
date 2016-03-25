@@ -289,6 +289,7 @@ au TabLeave * let g:lasttab = tabpagenr()
 
 " Dealing with ctrlp.vim
 let g:ctrlp_map = '<Leader>o'
+nmap <Leader>b :CtrlPBuffer<cr>
 set wildignore+=*.o,*.obj,*.pyc,*/.hg/*
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](objects|\.git|\.hg|\.svn)$',
