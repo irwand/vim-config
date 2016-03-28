@@ -60,6 +60,7 @@ let g:ctrlp_root_markers=['package','.git']
 let g:linuxsty_patterns = [ "/usr/src/", "/linux", "/ni6683" ]
 
 let g:airline_theme = 'bubblegum'
+let g:airline#extensions#whitespace#enabled = 0
 " === PLUGIN CONFIG END ===
 
 if has("unix")
