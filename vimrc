@@ -23,7 +23,7 @@ try
    Plug 'vim-scripts/Tab-Name'
    Plug 'qpkorr/vim-bufkill'
    Plug 'vim-scripts/DirDiff.vim'
-   Plug 'vim-scripts/DeleteTrailingWhitespace'
+   Plug 'csexton/trailertrash.vim'
    Plug 'msanders/snipmate.vim'
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-abolish'
@@ -289,7 +289,7 @@ if has("autocmd")
    "autocmd FileType * setlocal textwidth=78
 
    " automatically remove trailing whitespace before write
-   autocmd FileType c,cpp,java,python autocmd BufWritePre <buffer> :DeleteTrailingWhitespace
+   autocmd FileType c,cpp,java,python autocmd BufWritePre <buffer> :TrailerTrim
 
    " When editing a file, always jump to the last known cursor position.
    " Don't do it when the position is invalid or when inside an event handler
