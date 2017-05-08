@@ -33,11 +33,17 @@ try
    Plug 'vim-airline/vim-airline-themes'
    Plug 'vivien/vim-linux-coding-style'
    Plug 'tpope/vim-sensible'
+   Plug 'nvie/vim-flake8'
+   Plug 'nathanaelkane/vim-indent-guides'
+   Plug 'klen/python-mode'
 
    "phindman's tools I need to look at
    "Plug 'terryma/vim-multiple-cursors'
    "Plug 'tpope/vim-dispatch'
    "Plug 'tpope/vim-unimpaired'
+
+   "this is potentially slow
+   "Plug 'Valloric/YouCompleteMe'
 
    call plug#end()
 catch
@@ -47,6 +53,13 @@ endtry
 " === PLUGIN CONFIG BEGIN ===
 let g:netrw_alto = 1
 let g:netrw_altv = 1
+
+let g:indent_guides_guide_size = 1
+let g:indent_guides_color_change_percent = 3
+let g:indent_guides_enable_on_vim_startup = 1
+
+let g:pymode_lint_ignore = "E501" " disable line too long warning
+let g:pymode_rope = 0             " disable rope, slow
 
 let g:ctrlp_map = '<Leader>o'
 nmap <Leader>b :CtrlPBuffer<cr>
@@ -78,6 +91,7 @@ else
    set shell=cmd.exe             " use standard cmd.exe on Windows
    set directory=$TMP            " set temporary directory for swap files
    set viewdir=$TMP              " set temporary directory for view files
+   set renderoptions=type:directx
 endif
 
 " Set GUI appearance parameters
@@ -114,6 +128,7 @@ set diffopt=filler,iwhite,vertical " ignore whitespace, show filler line, vertic
 
 
 " Set editing parameters
+set foldlevel=99                 " don't fold anything by default
 set visualbell                   " visual bell instead of annoying beeping
 set showmatch                    " show parentheses match
 set nobackup                     " no backup file, those annoying files with '~' char
