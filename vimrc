@@ -33,8 +33,8 @@ try
    Plug 'vim-airline/vim-airline-themes'
    Plug 'vivien/vim-linux-coding-style'
    Plug 'tpope/vim-sensible'
-   Plug 'nvie/vim-flake8'
    Plug 'nathanaelkane/vim-indent-guides'
+   Plug 'nvie/vim-flake8'
    Plug 'klen/python-mode'
 
    "phindman's tools I need to look at
@@ -58,11 +58,21 @@ let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
 
-let g:pymode_lint_ignore = "E501" " disable line too long warning
-let g:pymode_rope = 0             " disable rope, slow
+" Either "python" or "python3" (or "disable")
+let g:pymode_python = "python"
+let g:pymode_doc = 0
+let g:pymode_rope = 0  " failing, and creates the .ropeproject folder when it works, so disabled
+let g:pymode_rope_complete_on_dot = 0
+set completeopt-=preview  " Don't show docs during auto-complete
+
+let g:pymode_lint_unmodified = 1
+let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe', 'pep257'] ", 'pylint']
+let g:pymode_options_max_line_length=120
+" D100-105: [pep257] Missing docstring in (various places http://pep257.readthedocs.io/en/latest/error_codes.html )
+" D203: blank line before class doc
+let g:pymode_lint_ignore = "D100,D101,D102,D103,D104,D105,D203"
 
 let g:ctrlp_map = '<Leader>o'
-nmap <Leader>b :CtrlPBuffer<cr>
 set wildignore+=*.o,*.obj,*.pyc,*/.hg/*
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/](objects|\.git|\.hg|\.svn)$',
@@ -286,6 +296,9 @@ endif
 let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
+
+nmap <Leader>l :PymodeLint<cr>
+nmap <Leader>u :CtrlPBuffer<cr>
 
 
 " Only do this part when compiled with support for autocommands.
