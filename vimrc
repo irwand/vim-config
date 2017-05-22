@@ -35,7 +35,7 @@ try
    Plug 'tpope/vim-sensible'
    Plug 'nathanaelkane/vim-indent-guides'
    Plug 'nvie/vim-flake8'
-   Plug 'klen/python-mode'
+   Plug 'Vimjas/vim-python-pep8-indent'
 
    "phindman's tools I need to look at
    "Plug 'terryma/vim-multiple-cursors'
@@ -57,20 +57,6 @@ let g:netrw_altv = 1
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
-
-" Either "python" or "python3" (or "disable")
-let g:pymode_python = "python"
-let g:pymode_doc = 0
-let g:pymode_rope = 0  " failing, and creates the .ropeproject folder when it works, so disabled
-let g:pymode_rope_complete_on_dot = 0
-set completeopt-=preview  " Don't show docs during auto-complete
-
-let g:pymode_lint_unmodified = 1
-let g:pymode_lint_checkers = ['pyflakes', 'pep8', 'mccabe', 'pep257'] ", 'pylint']
-let g:pymode_options_max_line_length=120
-" D100-105: [pep257] Missing docstring in (various places http://pep257.readthedocs.io/en/latest/error_codes.html )
-" D203: blank line before class doc
-let g:pymode_lint_ignore = "D100,D101,D102,D103,D104,D105,D203"
 
 let g:ctrlp_map = '<Leader>o'
 set wildignore+=*.o,*.obj,*.pyc,*/.hg/*
@@ -143,6 +129,7 @@ set visualbell                   " visual bell instead of annoying beeping
 set showmatch                    " show parentheses match
 set nobackup                     " no backup file, those annoying files with '~' char
 set list                         " always in list mode to show unseen chars
+set number                       " show line number
 
 " TODO: decide if you like to set filename completion to be like bash
 set wildmode=longest:full
@@ -297,7 +284,6 @@ let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
 au TabLeave * let g:lasttab = tabpagenr()
 
-nmap <Leader>l :PymodeLint<cr>
 nmap <Leader>u :CtrlPBuffer<cr>
 
 
@@ -309,6 +295,8 @@ if has("autocmd")
    au BufNewFile,BufRead *.C setfiletype c
    au BufNewFile,BufRead *.IPP setfiletype cpp
    au BufNewFile,BufRead *.ipp setfiletype cpp
+
+   autocmd BufWritePost *.py call Flake8()
 
    " for mako file, treat them like html
    au BufNewFile,BufRead *.mako setfiletype html
