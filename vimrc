@@ -36,6 +36,7 @@ try
    Plug 'nathanaelkane/vim-indent-guides'
    Plug 'nvie/vim-flake8'
    Plug 'Vimjas/vim-python-pep8-indent'
+   Plug 'cespare/vim-toml'
 
    "phindman's tools I need to look at
    "Plug 'terryma/vim-multiple-cursors'
@@ -97,7 +98,7 @@ if has("gui_running")
    if has("unix")
       set guifont=ProggySquareTTSZ\ 12
    else
-      set guifont=ProggySquareTTSZ:h12:cANSI
+      set guifont=Consolas:h9
    endif
 
    set mousehide                 " Hide the mouse when typing text
@@ -296,7 +297,8 @@ if has("autocmd")
    au BufNewFile,BufRead *.IPP setfiletype cpp
    au BufNewFile,BufRead *.ipp setfiletype cpp
 
-   autocmd BufWritePost *.py call Flake8()
+   " this makes saving painful
+   " autocmd BufWritePost *.py call Flake8()
 
    " for mako file, treat them like html
    au BufNewFile,BufRead *.mako setfiletype html
