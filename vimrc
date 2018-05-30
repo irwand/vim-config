@@ -290,6 +290,12 @@ nmap <Leader>u :CtrlPBuffer<cr>
 
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
+
+   au BufNewFile,BufRead *.sls setfiletype yaml
+   au Filetype yaml setlocal ts=2 sw=2
+
+   au Filetype ruby setlocal ts=2 sw=2
+
    " for CPP, C, IPP, ipp files, set the filetype accordingly for syntax
    " highlighting
    au BufNewFile,BufRead *.CPP setfiletype cpp
