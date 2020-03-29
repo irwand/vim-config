@@ -23,7 +23,6 @@ try
    Plug 'vim-scripts/Tab-Name'
    Plug 'qpkorr/vim-bufkill'
    Plug 'vim-scripts/DirDiff.vim'
-   Plug 'csexton/trailertrash.vim'
    Plug 'msanders/snipmate.vim'
    Plug 'tpope/vim-surround'
    Plug 'tpope/vim-abolish'
@@ -34,9 +33,13 @@ try
    Plug 'vivien/vim-linux-coding-style'
    Plug 'tpope/vim-sensible'
    Plug 'nathanaelkane/vim-indent-guides'
-   Plug 'nvie/vim-flake8'
    Plug 'Vimjas/vim-python-pep8-indent'
    Plug 'cespare/vim-toml'
+   Plug 'w0rp/ale'
+   Plug 'rust-lang/rust.vim'
+
+   "testing
+   Plug 'junegunn/vader.vim'
 
    "phindman's tools I need to look at
    "Plug 'terryma/vim-multiple-cursors'
@@ -55,6 +58,20 @@ endtry
 let g:netrw_alto = 1
 let g:netrw_altv = 1
 
+let g:ale_fixers = {
+\   '*': ['remove_trailing_lines', 'trim_whitespace'],
+\   'python': ['black'],
+\}
+let g:ale_linters = {
+\   'python': ['flake8'],
+\}
+let g:ale_fix_on_save = 0
+let g:ale_virtualenv_dir_names = ['.vimvenv']
+let g:airline#extensions#ale#enabled = 1
+"let g:ale_python_flake8_options="--ignore=H903,N816,W503,E203"
+
+let g:rustfmt_autosave = 1
+
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
@@ -71,6 +88,8 @@ let g:linuxsty_patterns = [ "/usr/src/", "/linux", "/ni6683" ]
 
 let g:airline_theme = 'bubblegum'
 let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#hunks#enabled=0  " this can be slow
+let g:airline#extensions#branch#enabled=0
 " === PLUGIN CONFIG END ===
 
 if has("unix")
@@ -303,17 +322,11 @@ if has("autocmd")
    au BufNewFile,BufRead *.IPP setfiletype cpp
    au BufNewFile,BufRead *.ipp setfiletype cpp
 
-   " this makes saving painful
-   " autocmd BufWritePost *.py call Flake8()
-
    " for mako file, treat them like html
    au BufNewFile,BufRead *.mako setfiletype html
 
    " For all files set 'textwidth' to 78 characters.
    "autocmd FileType * setlocal textwidth=78
-
-   " automatically remove trailing whitespace before write
-   autocmd FileType c,cpp,java,python autocmd BufWritePre <buffer> :TrailerTrim
 
    " When editing a file, always jump to the last known cursor position.
    " Don't do it when the position is invalid or when inside an event handler
